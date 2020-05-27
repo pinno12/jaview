@@ -1,0 +1,99 @@
+
+
+<div class="container-flex" style="margin-top:2.5rem;">
+    <div class="row">
+        <div id="mySidenav" class="sidenav col-md-2 col-xs-6" style="display:none;">
+            <form id="form_gerne" method="get" action="/list">
+                <div class="genre-check" >
+                    <input type="radio" name="genre[]" id="romance" value="romance" >
+                    <label for="romance">
+                        <span class="genre-text">ROMANCE (<lable id="romance_number"></lable>)</span>
+                    </label>
+                </div>
+                <div class="genre-check">
+                    <input type="radio" name="genre[]" id="dance" value="dance" >
+                    <label for="dance">
+                        <span class="genre-text">DANCE (<lable id="dance_number"></lable>)</span>
+                    </label>
+                </div>
+                <div class="genre-check">
+                    <input type="radio" name="genre[]" id="comedy" value="comedy" >
+                    <label for="comedy">
+                        <span class="genre-text">COMEDY (<lable id="comedy_number"></lable>)</span>
+                    </label>
+                </div>
+                <div class="genre-check">
+                    <input type="radio" name="genre[]" id="action" value="action" >
+                    <label for="action">
+                        <span class="genre-text">ACTION (<lable id="action_number"></lable>)</span>
+                    </label>
+                </div>
+                <div class="genre-check">
+                    <input type="radio" name="genre[]" id="drama" value="drama" >
+                    <label for="drama">
+                        <span class="genre-text">DRAMA (<lable id="drama_number"></lable>)</span>
+                    </label>
+                </div>
+                <div class="genre-check">
+                    <input type="radio" name="genre[]" id="special" value="art_etc">
+                    <label for="special">
+                        <span class="genre-text">special (<lable id="special_number"></lable>)</span>
+                    </label>
+                </div>
+                <input type="hidden" name="keyword" value="">
+                <input type="hidden" name="option" value="all">
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $('.genre-check input').on('change', function(){
+        $("#form_gerne").submit();
+    });
+    $(function(){
+        var genres = getGenre ();
+        for(var g in genres) {
+            $("#"+genres[g]).attr("checked", true);
+            if(genres[g] == 'art_etc') {
+                $("#special").attr("checked", true);
+            }
+        }
+        if(getParam('keyword') !="" ){
+            $("input[name=keyword]").val( getParam('keyword').replace('+', ' '));
+        }
+        if( getParam('option') !=""){
+            $("input[name=option]").val( getParam('option'));
+        }
+    });
+    function getGenre () {
+        var url = document.URL;
+        var genres = [];
+        try {
+            var params = url.split('?')[1].split('&');
+        } catch (e) {
+            return;
+        }
+
+        for(var p in params){
+            var param = params[p];
+            if( param.includes("genre") ){
+                genres.push(param.split('=')[1]);
+            }
+        }
+        return genres;
+    }
+    function getParam (selector) {
+        var url = document.URL;
+        try {
+            var _params = url.split('?')[1].split('&');
+        }catch (e) {
+            return;
+        }
+        for(var p in _params){
+            var param = _params[p];
+            if( param.includes(selector) ){
+                return decodeURIComponent(param.split('=')[1]);
+            }
+        }
+    }
+</script>

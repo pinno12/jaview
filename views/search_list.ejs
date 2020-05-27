@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>K-POP MV Director & Genre Database</title>
+    <script src='http://code.jquery.com/jquery-latest.js'></script>
+    <meta charset="utf-8">
+    <% include scripts/scripts %>
+</head>
+<body>
+    <% include partials/header %>
+    <script >
+           <% var countGenre = data["countGenre"] %>
+        $("#romance_number").text("<%= countGenre.romance %>");
+        $("#comedy_number").text("<%= countGenre.comedy %>");
+        $("#action_number").text("<%= countGenre.action %>");
+        $("#dance_number").text("<%= countGenre.dance %>");
+        $("#drama_number").text("<%= countGenre.drama %>");
+        $("#special_number").text("<%= countGenre.special %>");
+    </script>
+
+    <section class = "col-md-10 col-xs-12 col-md-offset-1" id = "search-result-container" style = "margin-top: 4rem;">
+        <div class = "mv-container-summary" style = "justify-content: space-between;">
+            <% var d = data["data"]%>
+            <ul id = "search-result">
+                <li>Result: <%=d.length%> </li>
+            </ul>
+            <ul>
+				<li id="date">
+					Date
+				</li>
+                <li>|</li>
+				<li id="hit">
+					Hot
+				</li>
+            </ul>
+        </div>
+        <div class = "mv-container-summary" id = "search-result-genre">
+		<form id="form_gerne" method="get" action="/list">
+          <ul>
+				<li>
+					<input type="submit"  id="all"  style="display:none;">
+					<label for="all">
+						<span class="pointer genre-text">All (<lable id="all_number"></lable>)</span>
+					</label>
+				</li>
+				<li>
+					<input type="submit" name="genre[]" id="performance" value="performance" style="display:none;">
+					<label for="performance">
+						<span class="pointer genre-text">Performance (<lable id="performance_number"></lable>)</span>
+					</label>
+				</li>
+				<li>
+					<input type="submit" name="genre[]" id="dramas" value="dramas" style="display:none;">
+					<label for="dramas">
+						<span class="genre-text pointer">Drama (<lable id="drama_number"></lable>)</span>
+					</label>
+				</li>
+				<li>
+					<input type="submit" name="genre[]" id="art" value="art_etc" style="display:none;">
+					<label for="art">
+						<span class="genre-text pointer">Art (<lable id="art_number"></lable>)</span>
+					</label>
+				</li>
+          </ul>
+		</form>
+        </div>
+		<div id="waterfall">
+            <% for (var i = 0;i < d.length; i++){ %>
+			<div>
+				<figure>
+                    <% if ( !d[i]['main_thumbnail'] ) { %>
+                        <img data-id="<%= d[i]['id'] %>" src="https://s3.ap-northeast-2.amazonaws.com/jaview2017/images/thumbnails/etc/No_Youtube_photo.png">
+                    <% } else { %>
+                        <img data-id="<%= d[i]['id'] %>" src="<%= d[i]['main_thumbnail']  %>">
+                    <% } %>
+				<figcaption>
+                    <p><a class = "jv-title" data-id ="<%= d[i]['id'] %>"><%= d[i]["title"] %></a> | <a class = "singer-list"><%= d[i]["singer_name"] %></a></p>
+				</figcaption>
+					<p><a class = "director-list">Dir.<%= d[i]["director_name"] %></a></p>
+					<p>
+						<% if(d[i]["romance"]){ %>
+						<a class = "genre-list drama-list">#Romance</a>
+						<% } if(d[i]["dance"]){ %>
+						<a class = "genre-list dance-list">#Performance</a>
+						<% } if(d[i]["comedy"]){ %>
+						<a class = "genre-list drama-list">#Comedy</a>
+						<% } if(d[i]["dramas"]){ %>
+						<a class = "genre-list drama-list">#Drama</a>
+						<% } if(d[i]["art_etc"]){ %>
+						<a class = "genre-list art-list">#Art</a>
+						<% } %>
+					</p>
+				</figure>
+			</div>
+            <% } %>
+        </div>
+    </section>
+
+	<script>
+	</script>
+    <% include partials/footer %>
+
+	<script src="/resources/js/zepto.js" type="text/javascript"></script>
+	<script src="/resources/js/jquery.waterfall.js" type="text/javascript"></script>
+
+<script>
+
+		$('#waterfall').waterfall({
+		colMinWidth: 250,
+		autoresize: true
+		});
+    $("figure img").click(function(){
+		window.open('/detail/'+$(this).data('id'));
+    });
+
+
+    $('figure').each(function(){
+        this.onclick = function() {}
+    });
+
+	 $(".jv-title").click(function(){
+	         window.location = '/detail/'+$(this).data('id');
+			     });
+
+    $(".director-list").click(function(){
+        var dir_name = $(this).text().replace(' ', '+').split('.')[1];
+        window.location.href= "/list?keyword="+dir_name+"&option=director";
+    });
+    $(function(){
+        var genres = getGenre ();
+        for(var g in genres) {
+            $("#"+genres[g]).attr("checked", true);
+            if(genres[g] == 'art_etc') {
+                $("#special").attr("checked", true);
+            }
+        }
+        if(getParam('keyword') !="" && getParam('keyword') != undefined ){
+			$('#form_gerne').append('<input name="keyword" type="hidden" >');
+            $("input[name=keyword]").val( getParam('keyword').replace('+', ' '));
+        }
+        if( getParam('option') !="" && getParam('option') != undefined){
+			$('#form_gerne').append('<input name="option"  type="hidden">');
+            $("#form_gerne input[name=option]").val( getParam('option'));
+        }
+		$('#date').click(function(){
+			var url = document.URL;
+			if (url.includes('order')){
+				url=url.split('&order')[0];
+			}
+			window.location.href = url+'&order=date';
+		});
+		$('#hit').click(function(){
+			var url = document.URL;
+			if (url.includes('order')){
+				url=url.split('&order')[0];
+			}
+			window.location.href = url+'&order=hit';
+		});
+    });
+    function getGenre () {
+        var url = document.URL;
+        var genres = [];
+        try {
+            var params = url.split('?')[1].split('&');
+        } catch (e) {
+            return;
+        }
+
+        for(var p in params){
+            var param = params[p];
+            if( param.includes("genre") ){
+                genres.push(param.split('=')[1]);
+            }
+        }
+        return genres;
+    }
+    function getGenre () {
+        var url = document.URL;
+        var genres = [];
+        try {
+            var params = url.split('?')[1].split('&');
+        } catch (e) {
+            return;
+        }
+
+        for(var p in params){
+            var param = params[p];
+            if( param.includes("genre") ){
+                genres.push(param.split('=')[1]);
+            }
+        }
+        return genres;
+    }
+    function getParam (selector) {
+        var url = document.URL;
+        try {
+            var _params = url.split('?')[1].split('&');
+        }catch (e) {
+            return;
+        }
+        for(var p in _params){
+            var param = _params[p];
+            if( param.includes(selector) ){
+                return decodeURIComponent(param.split('=')[1]);
+            }
+        }
+    }
+    $("#performance_number").text("<%= countGenre.performance %>");
+    $("#drama_number").text("<%= countGenre.drama %>");
+    $("#art_number").text("<%= countGenre.art %>");
+    $("#all_number").text("<%=d.length%>");
+</script>
+</body>
+</html>

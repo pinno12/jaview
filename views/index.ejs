@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <title>K-POP MV playground</title>
+    <% include scripts/scripts %>
+</head>
+<body>
+<% include partials/header %>
+<% include partials/sidebar %>
+<script>
+    $("#romance_number").text("<%= countGenre.romance %>");
+    $("#comedy_number").text("<%= countGenre.comedy %>");
+    $("#action_number").text("<%= countGenre.action %>");
+    $("#dance_number").text("<%= countGenre.dance %>");
+    $("#drama_number").text("<%= countGenre.drama %>");
+    $("#special_number").text("<%= countGenre.special %>");
+</script>
+<div class="container-flex">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            <div class="item active" data-id="<%= firstId %>" style = "background: url(<%= firstMvImg %>) no-repeat center;">
+              <div class="carousel-caption d-none d-md-block">
+                    <div class="banner full-width" data-id="<%= firstId %>">
+                      <p>Dir.<%= firstMvDirectorInfo %> <br>
+                        <%= firstMvSinger %><br>
+                        <%= firstMvTitle %><br>
+                        <%= firstMvInfo %><br>
+                      </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item" data-id="<%= secondId %>" style = "background: url(<%= secondMvImg %>) no-repeat center;">
+                <div class="carousel-caption d-none d-md-block">
+                    <div class="banner full-width" data-id="<%= secondId %>">
+                        Dir.<%= secondMvDirectorInfo %><br>
+                        <%= secondMvSinger %><br>
+                        <%= secondMvTitle %><br>
+                        <%= secondMvInfo %><br>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item" data-id="<%= thirdId %>" style = "background: url(<%= thirdMvImg %>) no-repeat center;">
+                 <div class="carousel-caption d-none d-md-block">
+                    <div class="banner full-width" data-id="<%= thirdId %>">
+                        Dir.<%= thirdMvDirectorInfo %><br>
+                        <%= thirdMvSinger %><br>
+                        <%= thirdMvTitle %><br>
+                        <%= thirdMvInfo %><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include partials/footer %>
+<script>
+    $(".banner, .item").click(function(){
+        window.location.href = "/detail/"+$(this).data('id');
+    });
+
+
+</script>
+</body>
+</html>

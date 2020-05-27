@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>My Theater | J▲VIEW</title>
+  <% include scripts/scripts %>
+</head>
+<body>
+  <% include partials/header %>
+  <% include partials/sidebar %>
+
+  <div class = "col-md-10 col-xs-12 col-md-offset-1" id = "my-theater-page" style = "margin-top: 2rem;">
+    <div class = "mv-container-summary" style = "border-bottom: solid 1.5px darkgray; justify-content: space-between; height:2.5rem;padding:0;">
+      <ul>
+        <li><h3 id="name"><h3></li>
+        </ul>
+        <ul class = "small-font" style="line-height:3rem;">
+          <!-- <li><a>Change the Nickname</a></li> 추후 개발-->
+          <li id = "delete" style = "padding-left:1rem;"><a>Remove my account</a></li>
+        </ul>
+      </div>
+      <div class="ui top attached tabular borderless menu" id = "genre" style="margin-top:0.2rem;">
+        <a class="item theater active" data-tab="like-tab" style="margin-right:1%;">Likes</a>
+        <a class="item theater" data-tab="comment-tab" style="margin-right:1%;">Comments</a>
+        <a class="item theater" data-tab="upload-tab" style="margin-right:1rem;" >Uploads</a>
+      </div>
+      <div class = "mv-container-summary small-font" style = "justify-content: space-between; overflow-x:hidden;">
+        <!-- common template of mypage -->
+        <section class = "mycomments ui bottom attached tab segment" data-tab = "comment-tab">
+          <div class = "mv-container-summary small-font little-space" style = "justify-content: space-between;">
+            <ul id = "commnets-result">
+              <li>I left <%= comments.length %> comments</li> <!--@SB "left"문자열은 Uploaded liked로 바뀜-->
+            </ul>
+            <ul class = "small-font">
+              <li><a href = "#" class = "list-order-date"><b>Name</b></a></li>
+              <li style = "padding-left:1rem;"><a href = "#">Latest</a></li>
+            </ul>
+          </div>
+
+          <% for(var com in comments) { %>
+            <div class = "mv-container-summary" id = "comments-result">
+              <div class="ui feed">
+                <div class="event" style = "margin: .5rem 0;">
+                  <div class="label" style = "width:20%;">
+                    <a href="/detail/<%= comments[com]['mvId'] %>"><img src="<%= comments[com]['mainThumbnail'] %>" style="border-radius: 0;"></a>
+                  </div>
+                  <div class="content">
+                    <div class="summary">
+                      <p><%= comments[com]['content']%></p>
+                    </div>
+                    <div class="meta small-font" style = "display:flex;">
+                      <ul>
+                        <li><a href="/detail/<%= comments[com]['mvId'] %>"><%= comments[com]['director']%> <%= comments[com]['title']%></a></li>
+                        <span> | </span>
+
+                        <li class="writer-date"> <%= comments[com]['created']%></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </section>
+          <section class ="uploaded ui bottom attached tab segment"  data-tab="upload-tab">
+            <div class = "mv-container-summary small-font little-space" style = "justify-content: space-between">
+              <ul id = "dig-result">
+                <li>I dug <%= uploads.length %> MVs</li>
+              </ul>
+              <ul class = "small-font">
+                <li><a href = "#" class = "list-order-date"><b>Name</b></a></li>
+                <li style = "padding-left:1rem;"><a href = "#">Latest</a></li>
+              </ul>
+            </div>
+            <% for(var up in uploads) { %>
+              <div class="mv-result-box col-md-4"  style="cursor:pointer">
+                <div class = "figure-box">
+                  <img src = "<%= uploads[up]['mainThumbnail'] %>">
+                  <p> <a href="/detail/<%= uploads[up]['mvid']%>">
+                    <% if (uploads[up]['title'] == null) { %>
+                      <%= uploads[up]['title_kr']%> | <%= uploads[up]['singer']%></a></p>
+                      <% } else { %>
+                        <%= uploads[up]['title']%> | <%= uploads[up]['singer']%></a></p>
+                        <% }  %>
+                      </div>
+                      <p><a href="/detail/<%= uploads[up]['id']%>"><%= uploads[up]['director']%></a> </p>
+                      <p class = "small-font"style = "color: lightgray;">10:52 P.M Tue Nov 07 2017</p>
+                    </div>
+                    <% } %>
+                  </section>
+                  <section class = "loveit ui bottom attached tab segment active" data-tab="like-tab">
+                    <div class = "mv-container-summary small-font little-space" style = "justify-content: space-between">
+                      <ul id = "like-result">
+                        <li>I like <%= likes.length %> MVs</li> <!--left는 Uploaded liked로 바뀜-->
+                      </ul>
+                      <ul class = "small-font">
+                        <li><a href = "#" class = "list-order-date"><b>Name</b></a></li>
+                        <li style = "padding-left:1rem;"><a href = "#">Latest</a></li>
+                      </ul>
+                    </div>
+                    <div id= "waterfall" style = "position:none;">
+                      <% for(var i=0; i< likes.length; i++) { %>
+                        <div>
+                          <!-- <div class="mv-result-box col-md-4"  style="cursor:pointer"> -->
+                          <!-- <div class = "figure-box"> -->
+                          <figure>
+                            <a href="/detail/<%= likes[i]['mvid']%>"><img src = "<%= likes[i]['mainThumbnail'] %>"></a>
+                            <figcaption>
+                              <p> <a href="/detail/<%= likes[i]['mvid']%>"><%= likes[i]['title']%> | <%= likes_meta[i]['singer']%></a></p>
+                            </figcaption>
+                            <!-- </div> -->
+                            <p><a href="/detail/<%= likes[i]['id']%>"><%= likes_meta[i]['director']%></a> </p>
+                            <p>
+                              <% for(var g in likes[i]['genre']) { %>
+                                #<%= likes[i]['genre'][g] %>
+                                <% } %>
+                              </p>
+                            </figure>
+                          </div>
+                          <% } %>
+                        </div>
+                      </section>
+                      <!-- <button id="delete"> remove my all infomation </button> -->
+                    </div>
+                  </div>
+                    <!-- close contents section -->
+                    <% include partials/footer %>
+                    <script>
+                    $('.menu .item')
+                    .tab()
+                    ;
+                    FB.getLoginStatus(function(res) {
+                      FB.api('/me?fields=name', function(res) {
+                        $('#name').html(res.name+"'s Theater");
+                      });
+                    });
+
+                    $("#delete").click(function(){
+                      FB.getLoginStatus(function(res) {
+                        console.log(res.public_profile);
+                        if(res.status =="connected"){
+                          var data = {'userid': res.authResponse.userID};
+                          $.ajax({
+                            url: window.location+'/delete',
+                            type: "POST",
+                            data: data,
+                            success : function(){
+                              FB.logout(function(){
+                                window.location = '/';
+                              });
+                            }
+                          })
+                        }
+                      });
+                    });
+                    </script>
+                    <script src="/resources/js/zepto.js" type="text/javascript"></script>
+                    <script src="/resources/js/jquery.waterfall.js" type="text/javascript"></script>
+                    <script>
+                    $('#waterfall').waterfall({
+                      colMinWidth: 250,
+                      autoresize: true
+                    });
+                    </script>
+                  </body>
+                  </html>

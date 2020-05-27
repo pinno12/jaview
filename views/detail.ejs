@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title><%=title %> | Dir.<%=director %></title>
+  <meta charset="utf-8">
+  <% include scripts/scripts %>
+</head>
+<body>
+  <% include partials/header %>
+  <% include partials/sidebar %>
+  <div class = "container-fluid" style="height:100%;">
+    <div class = "row" id = "main" style= "margin: 3rem 0;">
+	<div class = "col-xs-12 col-md-5 col-md-offset-1" id = "thumbnail-box">
+		<% if ( id > 20 ) { %>
+		<div class="embed-responsive embed-responsive-4by3">
+			<iframe class="embed-responsive-item" src="//www.youtube.com/embed/<%= videoid %>"></iframe>
+		</div>
+		<% } else { %>
+			<img class="error_img" src="https://s3.ap-northeast-2.amazonaws.com/jaview2017/images/thumbnails/etc/No_Youtube_photo.png">
+		<% } %>
+    <div class = "four-thumbnail" style = "margin-top: 3.3%;">
+  		<div class="paper" id="prev"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span></div>
+  		<div class="thumbnails">
+  			<% for(var i=0; i<thumbnail_list.length; i++) { %>
+  			<% if ( i < 4 ){ %>
+  				<a href="https://www.youtube.com/watch?v=<%= videoid %>&t=0m<%= i*30 %>s" target="_blank"><img data-idx="<%= i %>" src="<%= thumbnail_list[i] %>"></a>
+  				<% } else { %>
+  				<a href="https://www.youtube.com/watch?v=<%= videoid %>&t=0m<%= i*30 %>s" target="_blank"><img data-idx="<%= i %>" style="display:none;" src="<%= thumbnail_list[i] %>"></a>
+  				<% } %>
+  			<% } %>
+  		</div>
+		<div class="paper" id="next"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span></div>
+		<input type="hidden" name="current_page" value="0">
+		<input type="hidden" name="total_page" value="<%= thumbnail_list.length %>">
+	</div>
+</div>
+
+        <!--MV Information -->
+
+        <div class = "mv-description-text-container col-md-5 col-xs-12">
+          <div class = "mv-info-box">
+            <div class = "mv-info-text-box">
+              <p>Director.<a class = "director-list"><%=director %></a></p>
+              <p>
+                <% for(var i=0; i< genre.length; i++) { %>
+                  #<a class = "genre-list"><%=genre[i] %></a>
+                  <% } %>
+                </p>
+                <p title = "Title"><%=title %> | <a class = "singer-list" title="Singer" ><%=singer %></a></p>
+            </div>
+          </div>
+              <div class = "mv-info-box">
+                <div class = "mv-info-text-box">
+                  <b>Description</b>
+                  <% for(var d in description) { %>
+                    <% if ( description[d] != '' && description[d] !=null ) { %>
+                      <p><%= d %> : <%= description[d] %></p>
+                      <% } %>
+                      <% } %>
+                    </div>
+                  </div>
+              <!--MV-hyperlink-button-->
+              <div class = "mv-hyperlink-btn" style = "margin: 1rem 0.5rem;">
+                <a class = "gray-box" href = "<%=url %>" target= "_blank"><img src = "/resources/images/play-white.png" alt = "play">Play MV</a>
+                <a class = "gray-box" href="https://www.facebook.com/sharer/sharer.php?u=http://jaview.com/detail/<%= id %>" target="_blank"><img src="/resources/images/facebook-white.png" alt="facebook share">Share</a>
+                <a class = "gray-box"><img id = "save-i" src = "/resources/images/star-white.png" alt = "Like">Like</a>
+                <a class = "gray-box" id = "send"><img src = "/resources/images/message.png">Ask JAVIEW</a>
+            </div>
+                  </br>
+            <div class="fb-page"
+            data-href="https://www.facebook.com/jaview2015"
+            data-tabs="messages"
+            data-hide-cover="false"
+            data-show-facepile="false" style="display: none"></div>
+            <div class = "mv-info-box" style = "margin: 3rem 0;border-left: solid .2px  lightgray; border-bottom: solid .2px lightgray;">
+              <form class="comment" method="post" style="display:flex;">
+                <div class = "publish-mode" data-tooltip="Only me" data-position="bottom left" >
+                    <img onclick = "sayLoudly()" id = "lock" src = "/resources/images/lock.png" style="display:block;">
+                  </div>
+                  <div class = "publish-mode" data-tooltip="Shout it out" data-position="bottom left" >
+                    <img onclick = "sayLoudly()"id = "unlock" src = "/resources/images/unlock.png" style="display:none;">
+                </div>
+                <input class = "new-opinion" type = "text" name="content" placeholder= "I think ..."><input id = "opinion-submit" type = "submit" value="Record" onClick="return empty()">
+                <input type="hidden" name="mvId" value="<%= id %>">
+                <input type="hidden" name="userid">
+                <input type="hidden" name="created" >
+              </form>
+            </div>
+
+<% for(var com in comments) { %>
+
+              <div class="ui comments" style="max-width:100%;">
+                <div class="comment">
+                  <div class="content" >
+                    <b class="author" title = "author"><%= comments[com]['username'] %></b>
+                    <div class="metadata">
+                      <div class="date"> <%= comments[com]['created'] %></div>
+                      <div class="rating">
+                        <img src = "./resources/images/lock.png" style="height:1rem;">
+                      </div>
+                    </div>
+                    <div style = "display:flex;">
+                    <div class="text" style = "width:80%;">
+                      <b><%= comments[com]['content']%></b>
+                    </div>
+                    <div class = "text small-font" style="align-self:flex-end;text-align:right; width:20%;">
+                    Edit Remove
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+  <% } %>
+
+            </div>
+          </div>
+        </div>
+        <% include partials/footer %>
+        <script type="text/javascript">
+        $('#send').click(function(){
+          if($('.fb-page').css('display') == 'none'){
+            $('.fb-page').css('display', 'block');
+          } else {
+            $('.fb-page').css('display', 'none');
+          }
+        });
+		if ($('input[name="total_page"]').val() <= 4){
+			$('#next').css('display', 'none');
+			$('#prev').css('display', 'none');
+		}
+        FB.getLoginStatus(function(res) {
+          if(res.status == 'connected'){
+            var userid= res.authResponse.userID;
+            $('input[name="userid"]').val(userid);
+            var data = {
+              'userid' : userid
+            }
+            $.ajax({
+              url:window.location+'/likes',
+      				data: data,
+      				success : function(res){
+      					if(res== 'true'){
+      						$('#save-i').css('background-color', 'rgb(0,44,206)');
+      					}
+      				}
+      			})
+      		}
+      	});
+      	$('#save-i').click(function(){
+      		var userid = $('input[name="userid"]').val();
+      		if(userid==""){
+      			alert("Please login");
+      			window.location ='/login';
+      			return false;
+      		}
+      		var data = {
+      			'userid' : userid
+      		}
+      		var url = "";
+      		if ($(this).css('background-color') !="rgb(0, 44, 206)"){
+      			$(this).css('background-color',"rgb(0,44,206)");
+      			url = window.location+'/likes';
+      		}
+      		else {
+      			$(this).css('background-color',"lightgray");
+      			url = window.location+'/unlikes';
+      		}
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: data
+          });
+
+        });
+        $(".director-list").click(function(){
+          var dir_name = $(this).text().replace(' ', '+');
+          window.location.href= "/list?keyword="+dir_name+"&option=director";
+        });
+        $('.comment').submit(function(){
+          $(this).find('input[name="created"]').val(new Date($.now()).toString().split(" ").slice(0, 4).join(' '));
+        });
+
+        function empty(){
+		console.log(new Date($.now()));
+          var comment = $('input[name="content"]').val();
+          var userid = $('input[name="userid"]').val();
+          if (userid == ""){
+            alert('you must login');
+            window.location ='/login';
+            return false;
+          }
+          if (comment == 0 ){
+            return false;
+          }
+          else if (comment > 125) {
+            alert('A comment should not exceed 120 characters');
+            return false;
+          }
+          return true;
+        };
+		$('#prev').click(function(){
+			var c =parseInt( $('input[name="current_page"]').val());
+			var v = $('input[name="total_page"]').val();
+			for(var i=0; i<4 ;i++){
+				$('img[data-idx="'+(parseInt(c)+i)+'"]').css('display', 'none');
+			}
+			var _c = pagenation(c, v, false);
+			for(var i=0; i< 4; i++){
+				$('img[data-idx="'+(parseInt(_c)+i)+'"]').css('display', 'block');
+			}
+			$('input[name="current_page"]').val(_c);
+
+		});
+		$('#next').click(function(){
+			var c =parseInt( $('input[name="current_page"]').val());
+			var v = $('input[name="total_page"]').val();
+			for(var i=0; i<4 ;i++){
+				$('img[data-idx="'+(parseInt(c)+i)+'"]').css('display', 'none');
+			}
+			var _c = pagenation(c, v, true);
+
+			for(var i=0; i<4; i++){
+				$('img[data-idx="'+(parseInt(_c)+i)+'"]').css('display', 'block');
+			}
+			$('input[name="current_page"]').val(_c);
+		})
+		var pagenation = function(c, total, is_next){
+			var pageLimit = 4;
+			if(is_next){
+				if (c+4 < total) {
+					return c+4;
+				}
+				return 0;
+			} else {
+				if( c-4 >= 0 ){
+					return c-4;
+				}
+				else if (total%4 == 0){
+					return total/4*4-4;
+				} else {
+					return total/4*4-1;
+				}
+
+			}
+
+		}
+
+      </script>
+    </body>
+    </html>

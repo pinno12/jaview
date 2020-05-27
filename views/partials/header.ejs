@@ -1,0 +1,142 @@
+<header class= "container-fluid">
+	<div class = "row header-background"></div>
+	<div class = "row" id= "header">
+			<div class = "col-xs-1 col-md-1" id = "header-logo-temp" style="font-style: italic;">
+			<a href= "/"><img id = "logo" src = "/resources/images/logo.png" alt="jaview logo" style="
+				transform: translateY(-4px); height:1rem;></a>
+				<a href= "/"><img id = "logo-mobile" src = "./resources/images/logo-mobile.png" alt="jaview logo"></a>
+			</div>
+			<div class="ui borderless menu col-md-4" id = "genre">
+			  <a class="item genre" href="http://www.jaview.com/list?option=">ALL</a>
+			  <a class="item genre" href="http://www.jaview.com/list?option=&genre[]=dance">PERFORMANCE</a>
+			  <a class="item genre" href="http://www.jaview.com/list?option=&genre[]=dramas">DRAMA</a>
+			  <a class="item genre" href ="http://www.jaview.com/list?option=&genre[]=art_etc">ART</a>
+			</div>
+
+			<!-- <div class = "col-xs-2 col-md-2" id="dropdown_mobile">
+				<select id="option_dropdown" class="ui inline dropdown" style="float:right; background-color:white;border-color:white; ">
+					<option value="all">All</option>
+					<option value="director">Director</option>
+					<option value="singer">Singer</option>
+					<option value="title">Title</option>
+					<option value="description">Description</option>
+				</select>
+			</div> -->
+			<div class = "col-xs-8 col-md-3 col-md-offset-2 col-lg-offset-1">
+				<div class="ui search">
+					<form id="form_search" method="GET" action="/list">
+						<div class="ui icon input" style = "width:100%;">
+							<input id="id_keyword" name="keyword" class="prompt" type="text" placeholder="Search K-POP MV">
+							<i id ="search_btn" class="search icon" style = "color:blue;"></i>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class = "col-xs-2 col-md-1" id = "my-theater"><a id="mypage_tab" class="mypage"></a></div>
+			<div class = "col-xs-2 col-md-1" id = "my-theater"><a class="upload">Upload</a></div>
+			<div class = "col-xs-1 col-md-1" id = "my-theater-mobile" style = "text-align:center;">
+				<a href = "#" style = "font-size:1.2rem;">☆</a></div>
+				<div class = "col-md-1" id = "login" style = "text-align:center;">
+					<a class="login" > Login </a>
+					<a class="logout" style="display: none;"> Logout</a>
+				</div>
+			</div>
+			<form action="/mypage" class="mypage" method="POST" >
+				<input type="hidden" name="userid">
+			</form>
+			<script type="text/javascript">
+    function getParam (selector) {
+        var url = document.URL;
+        try {
+            var _params = url.split('?')[1].split('&');
+        }catch (e) {
+            return;
+        }
+        for(var p in _params){
+            var param = _params[p];
+            if( param.includes(selector) ){
+                return decodeURIComponent(param.split('=')[1]);
+            }
+        }
+    }
+				$("#search_btn").on('click', function(){
+					//var option = $("#option_dropdown").val();
+					var option = 'all';
+					var input = $("<input>")
+					.attr("type", "hidden")
+					.attr("name", "option").val(option);
+					$('#form_search').append($(input));
+					$("#form_search").submit();
+				});
+				$("#id_keyword").on('keypress', function(){
+					if (event.which == 13) {
+						//var option = $("#option_dropdown").val();
+						var option = 'all';
+						var input = $("<input>")
+						.attr("type", "hidden")
+						.attr("name", "option").val(option);
+						$('#form_search').append($(input));
+						$("#form_search").submit();
+					}
+				});
+				$(function(){
+					var option = getParam('option');
+					if(option!=null) {
+						$("#option_dropdown").val(option);
+					}
+					FB.getLoginStatus(function(response) {
+						if (response.status === 'connected') {
+							$('#login').find('.login').css('display', 'none');
+							$('#login').find('.logout').css('display', 'inline-flex');
+							FB.api('/me?fields=name', function(res) {
+								$('#mypage_tab').text(res.name+"'s Theater");
+							});
+						} else {
+							$('#login').find('.logout').css('display', 'none');
+							$('#login').find('.login').css('display', 'inline-flex');
+							$('#mypage_tab').text("MY Theater");
+						}
+					});
+				});
+				$('.login').click(function(){
+					window.location = '/login';
+				})
+				$('.logout').click(function(){
+					FB.getLoginStatus(function(res) {
+						FB.logout(function(res) {
+							window.location= '/';
+						});
+					});
+				});
+
+				$('.mypage').click(function(){
+					FB.getLoginStatus(function(res) {
+						if(res.status != 'connected'){
+							window.location = '/login';
+						} else {
+							$('input[name="userid"]').val(res.authResponse.userID);
+							$('.mypage').submit();
+						}
+					});
+				});
+				$('.upload').click(function(){
+					FB.getLoginStatus(function(res) {
+						if(res.status != 'connected'){
+							window.location = '/login';
+						} else {
+							window.location = '/upload';
+						}
+					});
+				});
+				$('.ui.menu a.item')
+        .on('click', function() {
+          $(this)
+            .addClass('active')
+            .siblings()
+            .removeClass('active')
+          ;
+        })
+
+			</script>
+		</header>

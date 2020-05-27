@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>K-POP MV playground</title>
+  <% include scripts/scripts %>
+</head>
+<body>
+  <% include partials/header %>
+  <% include partials/sidebar %>
+  <div class = "container-fluid" style="height:100%;">
+    <div class = "row" id = "main" style= "margin: 3rem 0;">
+      <div class = "col-md-5 col-md-offset-1 col-xs-12">
+        <form method="POST" >
+          <div class="ui form" style = "margin-top:2rem;">
+            <div class="inline field">
+              <label>Director*</label>
+              <input type="text" class= "mv-info-box" placeholder="Jung Seungwon" name="director" />
+            </div>
+            <div class="inline field">
+              <label>Title*</label>
+              <input type="text" placeholder="You are so beautiful" name="title" required />
+            </div>
+            <div class="inline field">
+              <label>Singer*</label>
+              <input type="text" placeholder="Niar Band" name="singer" required/>
+            </div>
+            <div class="inline field">
+              <label>Youtube Link*</label>
+              <input type="text" placeholder= "http://" name="link" required/><a class="upload_link" style = "margin-left:24%;">Validation</a>
+			  <input type="hidden" id="_thumb0" name="thumb0">
+			  <input type="hidden" id="_thumb1" name="thumb1">
+			  <input type="hidden" id="_thumb2" name="thumb2">
+			  <input type="hidden" id="_thumb3" name="thumb3">
+            </div>
+            <div class = "inline field" style = "display:flex;">
+              <label>MV includes*</label>
+              <div class = "genre-box" style = "display:flex;">
+                <div class = "genre-check">
+                  <input type="checkbox" name="genre" value="dance" id="_dance"> <label for="_dance">Dance</label>
+                </div>
+                <div class = "genre-check">
+                  <input class= "genre-check" type="checkbox" name="genre" value="romance" id="_romance"> <label for="_romance">Romance</label>
+                </div>
+                <div class = "genre-check">
+                  <input type="checkbox" name="genre" value="comedy" id="_comedy"><label for="_comedy">Comedy</label>
+                </div>
+              </div>
+            </div>
+            <div class="inline field">
+              <label>My Diary</label>
+              <input type="text" name="diary" placeholder="Optional">
+            </div>
+            <div class="inline field">
+              <label>Stars</label>
+              <input type="text" name="star" placeholder="Changsu (artist)"> <!-- 컴마로 구분-->
+            </div>
+            <div class="inline field">
+              <label>Products</label>
+              <input type="text" name="product" placeholder="Fashion, beauty or any products in MV">
+            </div>
+            <div class="inline field">
+              <label>Place</label>
+              <input type="text" name="place" placeholder="Original or similar shooting place in MV">
+            </div>
+            <div class="inline field">
+              <label>Story</label>
+              <input type="text" name="story" placeholder="Once upon a time..">
+            </div>
+            <div class="inline field">
+              <label></label>
+              <input id = "opinion-submit" type = "submit" value="Upload" style = "float:none;" name="submit">
+            </div>
+          </div>
+        </form>
+        </div>
+
+
+
+        <!--
+        <p>director : <input name="director" /></p>
+        <p>title : <input name="title" required /></p>
+        <p>singer : <input name="singer" required/></p>
+        <p>link : <input name="link" required/><a class="upload_link">validation</a></p>
+        <input type="checkbox" name="genre" value="dance" id="_dance"> <label for="_dance">Dance</label>
+        <input type="checkbox" name="genre" value="romance" id="_romance"> <label for="_romance">Romance</label>
+        <input type="checkbox" name="genre" value="comedy" id="_comedy"><label for="_comedy">Comedy</label>
+        <input type="checkbox" name="genre" value="action" id="_action"><label for="_action">Action</label>
+        <input type="checkbox" name="genre" value="drama" id="_drama"><label for="_drama">Drama</label>
+        <input type="checkbox" name="genre" value="art/ect" id="_art/etc"><label for="_art/etc">Art/Etc</label>
+        <p><input name="submit" type="submit" value="Upload"/></p>
+      </form>-->
+      <div class = "col-md-5" id = "thumbnail-box">
+      <img class="mv">
+      <img class="thumb" id="thumb0">
+      <img class="thumb" id="thumb1">
+      <img class="thumb" id="thumb2">
+      <img class="thumb" id="thumb3">
+    </div>
+      <% include partials/footer %>
+      <script>
+	  <% if (send == "success") {%>
+		alert("send success, it will be uploaded soon");
+	  <% } %>
+      FB.getLoginStatus(function(res) {
+        if(res.status != 'connected'){
+          window.location = '/login';
+        }
+      });
+      $('.upload_link').click(function(){
+		  $('.mv').attr("src", "");
+		  $('#thumb0').attr("src", "");
+		  $('#thumb1').attr("src", "");
+		  $('#thumb2').attr("src", "");
+        var link = $('input[name="link"]').val();
+        var youtube_img= "https://img.youtube.com/vi/";
+		var youtube_id = "";
+        if (link.includes('youtube.com/')){
+          youtube_id = link.split('watch?v=')[1];
+		} else if (link.includes('youtu.be/')){
+          youtube_id = link.split('.be/')[1];
+        } else {
+        }
+          $('.mv').attr("src", youtube_img+youtube_id+"/0.jpg");
+          $('#thumb0').attr("src", youtube_img+youtube_id+"/1.jpg");
+          $('#thumb1').attr("src", youtube_img+youtube_id+"/2.jpg");
+          $('#thumb2').attr("src", youtube_img+youtube_id+"/3.jpg");
+		  $("#_thumb0").val(youtube_img+youtube_id+"/0.jpg");
+		  $("#_thumb1").val(youtube_img+youtube_id+"/1.jpg");
+		  $("#_thumb2").val(youtube_img+youtube_id+"/2.jpg");
+		  $("#_thumb3").val(youtube_img+youtube_id+"/3.jpg");
+      })
+      </script>
+    </body>
+    </html>
