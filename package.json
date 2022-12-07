@@ -8,7 +8,7 @@
 		"body-parser": "^1.17.1",
 		"cookie-parser": "^1.4.3",
 		"ejs": "^2.4.2",
-		"express": "^4.13.4",
+		"express": "^4.17.3",
 		"express-session": "^1.15.2",
 		"materialize-css": "^0.99.0",
 		"mysql": "^2.13.0",
